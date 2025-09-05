@@ -25,6 +25,12 @@ This repository contains notes (only important) on Database Management Systems (
   - [Keys](#keys)
   - [Constraints and Its Types](#constraints-and-its-types)
   - [Normalization](#normalization)
+  - [ACID properties](#acid-properties)
+  - [Transaction-](#transaction-)
+  - [Master-Slave Architecture](#master-slave-architecture)
+  - [Horizontal vs Vertical Scaling](#horizontal-vs-vertical-scaling)
+  - [Clustering vs Sharding](#clustering-vs-sharding)
+  - [CAP Theorem](#cap-theorem)
 
 ### What is DBMS?
 
@@ -225,3 +231,109 @@ A conceptual model representing real-world entities and their relationships by t
 3. **3NF (Third Normal Form)**: 2NF + no transitive dependency.
 4. **Boyce-Codd Normal Form (BCNF)**: Every determinant is a candidate key; eliminates anomalies from functional dependencies.
 
+## ACID properties
+1. Atomicity- Either all operations will be refleccted in DB or none.
+2. Consistency- Integrity constraint must me maintained before and after transaction.
+3. Isolation- There must me isolation in the system. This property ensures that multiple transactions can occur simultaneously
+without causing any inconsistency
+4. Durability- After successful transaction, the changes in DB should persist even in case of system failure.
+
+## Transaction- 
+Transaction is a single logical unit of work formed by a set of operations.
+
+## Master-Slave Architecture
+
+Master-Slave architecture is a **replication model** used in databases to improve **read performance** and **availability**.
+
+- **Master Node**: Handles all **write operations** (INSERT, UPDATE, DELETE). It is the authoritative source of data.
+- **Slave Nodes**: Handle **read operations** and replicate data from the master.
+- **Replication**: Can be synchronous (slaves always up-to-date) or asynchronous (slaves may lag slightly).
+
+**Advantages**:
+- Improved read performance.
+- High availability and redundancy.
+- Offloading backups to slaves.
+
+**Disadvantages**:
+- Single point of failure for writes.
+- Possible replication lag.
+- Complex failover management.
+
+**Diagram**:
+```
+      +--------+
+      | Master |
+      +--------+
+      /       \
+     /         \
++--------+   +--------+
+| Slave1 |   | Slave2 |
++--------+   +--------+
+
+```
+
+
+---
+
+## Horizontal vs Vertical Scaling
+
+**Scaling** is a way to handle increased load on a database system.
+
+1. **Vertical Scaling (Scaling Up)**:
+   - Increase resources of a single machine (CPU, RAM, storage).
+   - Simple to implement.
+   - Limited by hardware capacity.
+   
+2. **Horizontal Scaling (Scaling Out)**:
+   - Add more machines to the system.
+   - Can handle large-scale data and traffic.
+   - More complex (requires distribution of data and load balancing).
+
+**Comparison**:
+
+| Feature            | Vertical Scaling          | Horizontal Scaling       |
+|-------------------|-------------------------|-------------------------|
+| Approach           | Upgrade a single server | Add more servers        |
+| Limitations        | Hardware limits         | Complexity of management|
+| Cost               | Can be expensive        | Scales better with demand|
+| Fault Tolerance    | Low                     | High (redundancy)       |
+
+---
+
+## Clustering vs Sharding
+
+1. **Clustering**:
+   - Multiple database nodes work together to provide **high availability**.
+   - Each node can serve **all data** (replicated across nodes).
+   - Failover is easier.
+
+2. **Sharding**:
+   - Data is **partitioned across multiple nodes**.
+   - Each node stores only a **subset of the data**.
+   - Improves **write and read performance** for very large datasets.
+
+**Comparison**:
+
+| Feature          | Clustering                    | Sharding                     |
+|-----------------|--------------------------------|-------------------------------|
+| Data Distribution | Full replication             | Partitioned (subset per node)|
+| Use Case         | High availability            | Large dataset scaling         |
+| Complexity       | Moderate                     | High (routing required)       |
+| Fault Tolerance  | High                         | Depends on shard replication  |
+
+---
+
+## CAP Theorem
+
+**CAP Theorem** states that a distributed database system can provide only **two out of three** guarantees simultaneously:
+
+1. **Consistency (C)**: All nodes see the same data at the same time.
+2. **Availability (A)**: Every request receives a response (success or failure).
+3. **Partition Tolerance (P)**: The system continues to operate despite network partitions.
+
+**Implications**:
+- CA systems: Strong consistency and availability, but no tolerance to network partitions.
+- CP systems: Consistency and partition tolerance, may sacrifice availability.
+- AP systems: Availability and partition tolerance, may sacrifice consistency.
+
+---
